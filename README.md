@@ -1,3 +1,6 @@
+<div align="center">
+  <img src=".Screenshot" width="250" alt="Design Showcase">
+</div>
 # Android Mirror (`amirror`)
 
 Aplikasi mirroring Android ke laptop Windows (video UHD + audio + kontrol keyboard & mouse + OBS Studio) yang dibangun **100% dari nol** — **tanpa root** dan **tanpa install APK** di HP.
