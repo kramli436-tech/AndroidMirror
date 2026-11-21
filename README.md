@@ -1,5 +1,5 @@
 <div align="center">
-  <img src=".Screenshot" width="250" alt="Design Showcase">
+  <img src=".Screenshot.png" width="250" alt="Design Showcase">
 </div>
 # Android Mirror (`amirror`)
 
