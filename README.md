@@ -1,7 +1,7 @@
 <div align="center">
   <img src="Screenshot.png" width="650" alt="Screenshot.png">
 </div>
-# 📱 AndroidMirror
+📱 AndroidMirror
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011%20(64--bit)-0078D6?style=for-the-badge&logo=windows)
 ![Android](https://img.shields.io/badge/Android-8.0%2B%20(Audio%2011%2B)-3DDC84?style=for-the-badge&logo=android&logoColor=white)
