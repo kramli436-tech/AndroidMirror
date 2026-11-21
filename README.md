@@ -120,7 +120,7 @@ Unduh versi terbaru pada halaman **[Releases](https://github.com/kramli436-tech/
 - **Apakah bisa dipakai sambil main game 120 FPS?**
   Bisa, selama layar dan hardware encoder HP mendukung 90/120 Hz. Untuk kelancaran terbaik tanpa patah-patah, gunakan preset **Gaming FHD (1920)** melalui kabel USB.
 - **Bagaimana cara pakai lewat Wi-Fi tanpa kabel?**
- Dalam proses perkembangan
+ Colok kabel USB sebentar → klik tombol Pindah USB → Wi-Fi (:5555) di panel kiri AndroidMirror.exe → setelah tersambung, kabel USB dapat dicabut. Atau gunakan fitur Wireless Pairing (Android 11+) langsung di panel Wi-Fi.
 
 ---
 
