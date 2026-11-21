@@ -1,89 +1,130 @@
 <div align="center">
   <img src="Screenshot.png" width="650" alt="Screenshot.png">
 </div>
-# Android Mirror (`amirror`)
+# 📱 AndroidMirror
 
-Aplikasi mirroring Android ke laptop Windows (video UHD + audio + kontrol keyboard & mouse + OBS Studio) yang dibangun **100% dari nol** — **tanpa root** dan **tanpa install APK** di HP.
+![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011%20(64--bit)-0078D6?style=for-the-badge&logo=windows)
+![Android](https://img.shields.io/badge/Android-8.0%2B%20(Audio%2011%2B)-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+![No Root](https://img.shields.io/badge/Root-Not%20Required-22C55E?style=for-the-badge)
+![No APK](https://img.shields.io/badge/Android%20APK-Not%20Required-4F8CFF?style=for-the-badge)
+[![Release](https://img.shields.io/github/v/release/kramli436-tech/AndroidMirror?style=for-the-badge&color=6366F1)](https://github.com/kramli436-tech/AndroidMirror/releases/latest)
 
-## Fitur Utama
-- **Tanpa Root & Tanpa APK**: `amirror-server.jar` (~22 KB DEX) dijalankan sementara lewat `adb shell app_process`.
-- **Resolusi Full HD Optimal (`1920p`, kelipatan 16) & 30–120 FPS Stabil**:
-  - 36% lebih ringan dari UHD sehingga tidak patah-patah saat main game berat, namun tetap sangat tajam (tanpa pecah-pecah) berkat **16–20 Mbps**, **H.264 High Profile** (CABAC + 8x8 DCT), **VBR**, **GOP 2 detik**, warna **BT.709**, dan *keyframe-gated flush*.
-- **Audio Jernih Tanpa Pecah-Pecah (Android 11+)**:
-  - Server mengirim PCM 48 kHz stereo **20 ms ter-align 4-byte** dengan buffer capture internal 8× (anti drop saat CPU HP sibuk main game).
-  - Client otomatis menyesuaikan sample rate native speaker/headset Windows (**WASAPI 44.1 / 48 / 96 kHz**), pre-buffer 65 ms, **adaptive linear resampler** (±1,5% halus, tanpa potong sampel paksa / tanpa *click/pop*), dan *soft fade* 3 ms.
-- **Ringan di CPU & Optimal FPS**:
-  - **Zero-Copy Hardware DXVA/D3D11 GPU Decode** triple-buffered (`IMFDXGIDeviceManager` + `CopySubresourceRegion` + cached `VideoProcessorInputView`, 0 alokasi per frame di VRAM).
-  - Antrian video maksimal **1 frame** (*latest-frame-wins*), `SetMaximumFrameLatency(1)`, `TCP_NODELAY`, `timeBeginPeriod(1)`.
-- **Siap OBS Studio (`--obs` / `run-obs.bat`)**:
-  - Judul jendela statis `amirror [OBS]` (OBS tidak pernah kehilangan target Window Capture).
-  - Otomatis ubah rasio jendela saat HP berputar **Portrait ↔ Landscape** (tanpa bar hitam saat main game!).
-  - Warna BT.709 akurat, VSync halus untuk streaming, borderless (`Alt+B`), ukuran 1:1 native (`Alt+1`), serta audio game terpisah via *Application Audio Capture*.
-- **Audio Internal (Android 11+)**: 48 kHz stereo PCM 10 ms/frame + koreksi drift otomatis.
-- **Rekam Layar Tanpa Re-Encode**: muxing langsung ke `.mkv` (`--record hasil.mkv`).
+**AndroidMirror** adalah aplikasi desktop Windows ultra-ringan untuk melakukan **mirroring layar dan audio perangkat Android ke laptop/PC** melalui **USB** maupun **Wi-Fi (TCP/IP)** dengan kontrol penuh **keyboard & mouse** — **tanpa root** dan **tanpa menginstal aplikasi (APK)** di perangkat Android.
 
-## Cara Menjalankan (Siap Pakai)
+Dirancang khusus untuk **latensi sangat rendah**, **gameplay mulus (FHD 30–120 FPS)**, **audio jernih**, serta **dukungan penuh OBS Studio** untuk kebutuhan live streaming dan perekaman konten.
 
-Pastikan **USB Debugging** aktif di HP Android:
-- **Aplikasi Desktop GUI (Rekomendasi — tanpa jendela CMD hitam):** buka folder `android-mirror\dist\` lalu double-click **`AndroidMirror.exe`** (4.1 MB, Dark Mode modern, auto-detect HP, preset 1-klik Gaming FHD / OBS Studio / Wi-Fi, remote HP + screenshot PNG, rekam `.mkv`, dan live log).
-- **Atau shortcut cepat di folder `android-mirror\`:**
-  - **Main Game / Mirror USB (FHD 1920 optimal, 30–120 fps, 16 Mbps):** double-click **`run-usb.bat`**
-  - **Streaming OBS Studio (FHD 1920, 60 fps stabil, 20 Mbps, judul statis):** double-click **`run-obs.bat`**
-  - **Mirror via Wi-Fi (TCP/IP):** colok USB sebentar → double-click **`run-wifi.bat`**
+---
 
-### Cara Pakai Lewat PowerShell / CLI
-```powershell
-cd "android-mirror\dist"
+## ✨ Fitur Utama
 
-# Full HD optimal, 120 fps, 16 Mbps (halus & tajam tanpa patah-patah)
-.\amirror.exe --max-size 1920 --max-fps 120 --bitrate-mbps 16
+- **🔒 Tanpa Root & Tanpa Install APK**
+  Tidak memasang aplikasi apa pun di HP. Cukup aktifkan *USB Debugging*, server sementara (~22 KB) berjalan otomatis saat terhubung dan berhenti bersih saat aplikasi ditutup.
+- **⚡ Latensi Sangat Rendah & Stabil (Mode USB Real-Time)**
+  Menggunakan pipeline antrian maksimal 1 frame (*latest-frame-wins*), `TCP_NODELAY`, dan watchdog otomatis agar delay tidak pernah menumpuk meski dipakai berjam-jam.
+- **🎮 Full HD Optimal (30–120 FPS) & Anti Pecah-Pecah Saat Main Game**
+  Mendukung hardware encoding **H.264 High Profile** / **H.265 (HEVC)** dengan **VBR**, **GOP 2 detik**, dan standar warna **BT.709** sehingga adegan game cepat tetap tajam dan halus.
+- **🚀 Super Ringan di CPU (Hardware DXVA GPU Decode)**
+  Decoding dan rendering berjalan langsung di GPU (*Direct3D 11 + Zero-Copy DXVA*), sangat ringan di CPU dan RAM (~4 MB aplikasi utama, tanpa browser/Electron).
+- **🔊 Audio Internal Jernih (Android 11+)**
+  Menangkap audio internal HP (48 kHz stereo PCM) dengan *WASAPI Adaptive Resampler* dan *jitter buffer* untuk mencegah suara kresek, putus-putus, maupun delay audio yang menumpuk.
+- **🖱️ Kontrol Keyboard & Mouse Lengkap**
+  Kendalikan HP langsung dari laptop: sentuh, drag, scroll, ketik teks, tombol navigasi, remote cepat HP, hingga **Screenshot PNG 1-klik**.
+- **🎥 Siap Streaming di OBS Studio**
+  Mode khusus **OBS Studio** dengan judul jendela statis (`amirror [OBS]`), penyesuaian rasio otomatis saat HP berputar **Portrait ↔ Landscape** (tanpa bar hitam), warna Rec. 709, Borderless (`Alt+B`), ukuran 1:1 native (`Alt+1`), serta dukungan audio game terpisah via *Application Audio Capture*.
+- **⏺️ Rekam Layar Tanpa Re-Encode (`.mkv`)**
+  Rekam langsung video & audio ke file `.mkv` tanpa membebani CPU/GPU.
+- **📡 Koneksi USB & Wi-Fi (TCP/IP)**
+  Mendukung mirroring via kabel USB, pindah cepat USB → Wi-Fi (`:5555`), koneksi `IP:Port`, dan **Wireless Debugging Pairing** (Android 11+).
+- **🖥️ Control Center Modern (Dark Mode)**
+  Tampilan desktop ringan dengan deteksi HP otomatis (model, versi Android, persentase baterai), 4 preset 1-klik (*Gaming FHD*, *OBS Studio*, *Wi-Fi Stabil*, *Custom*), dan *Live Log*.
 
-# Mode OBS Studio (FHD 60 fps, judul tetap "amirror [OBS]", 20 Mbps, VSync halus)
-.\amirror.exe --obs --max-size 1920 --max-fps 60 --bitrate-mbps 20
+---
 
-# Opsi UHD jika PC/HP sanggup (opsional)
-.\amirror.exe --max-size 3840 --max-fps 60 --bitrate-mbps 24
+## 📥 Unduh Aplikasi
 
-# Rekam layar langsung ke MKV tanpa re-encode
-.\amirror.exe --record gameplay.mkv
+Unduh versi terbaru pada halaman **[Releases](https://github.com/kramli436-tech/AndroidMirror/releases/latest)**:
 
-# Pairing Wireless Debugging (Android 11+)
-.\amirror.exe --pair 192.168.1.50:37099 123456
-```
+👉 **[Download AndroidMirror (Windows 64-bit)](https://github.com/kramli436-tech/AndroidMirror/releases/latest)**
 
-## Setup OBS Studio (Kualitas Broadcast)
-1. Jalankan **`run-obs.bat`** (jendela akan muncul dengan judul `amirror [OBS]`).
-2. Di **OBS Studio → Sources → + → Window Capture**:
-   - **Window**: `[amirror.exe]: amirror [OBS]`
-   - **Capture Method**: `Windows 10 (1903 and up)`
-   - **Client Area**: centang (aktif)
-   - Klik kanan source → **Transform → Fit to Screen** (`Ctrl + F`).
-3. Untuk **Audio Game Terpisah** (tanpa bocor suara Discord/Windows):
-   - **Sources → + → Application Audio Capture (BETA)** → pilih `[amirror.exe]: amirror [OBS]`.
-4. **Tips kualitas maksimal**:
-   - Saat game sudah masuk mode Landscape, jendela `amirror` otomatis menyesuaikan rasio tanpa bar hitam.
-   - Tekan **`Alt + B`** untuk mode Borderless, **`Alt + 1`** untuk resolusi piksel 1:1 native.
-   - Di OBS → Settings → Video: gunakan **1920×1080** atau **3840×2160** (60 fps), Downscale Filter **Lanczos**, Color Space **Rec. 709**.
+---
 
-## Shortcut Keyboard & Mouse
-| Input | Fungsi |
+## 💻 Persyaratan Sistem
+
+| Komponen | Minimum / Rekomendasi |
 |---|---|
-| Klik kiri / drag | Sentuh / geser layar |
-| Klik kanan | **Back** (atau nyalakan layar HP jika mati) |
-| Klik tengah | **Home** |
-| Scroll wheel | Scroll layar |
-| `Alt + F` | Toggle Fullscreen |
-| `Alt + B` | Toggle **Borderless** (ideal untuk OBS) |
-| `Alt + 1` | Ukuran jendela **1:1 piksel native** |
-| `Alt + 2` | Ukuran jendela pas layar desktop |
-| `Alt + I` | Tampilkan / sembunyikan statistik FPS & delay di title bar |
-| `Alt + K` | Paksa kirim keyframe baru (refresh ketajaman instan) |
-| `Alt + R` | Putar layar (Rotate) |
-| `Alt + O` | Matikan / nyalakan layar fisik HP |
-| `Alt + H` / `Alt + S` / `Alt + Backspace` | Home / Recent Apps / Back |
-| `Alt + Up` / `Alt + Down` / `Alt + P` | Volume + / Volume - / Power |
+| **OS Laptop / PC** | Windows 10 / Windows 11 (64-bit) dengan GPU Direct3D 11 |
+| **Android (Video & Kontrol)** | Android 8.0 ke atas dengan **USB Debugging** aktif |
+| **Android (Audio Internal)** | Android 11 ke atas *(Android 12+ langsung jalan; Android 11 layar harus dalam kondisi tidak terkunci saat mulai; Android ≤ 10 otomatis video saja)* |
+| **Kabel / Jaringan** | Kabel USB data berkualitas baik (disarankan untuk latensi terendah) atau Wi-Fi 5 GHz |
 
-## Build Ulang dari Source
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\package-dist.ps1
-```
+---
+
+## 🚀 Cara Penggunaan
+
+1. **Aktifkan USB Debugging di HP Android:**
+   - Buka *Settings → About Phone* → ketuk *Build Number* 7× untuk mengaktifkan *Developer Options*.
+   - Buka *Developer Options* → aktifkan **USB Debugging**.
+   - *(Khusus Xiaomi / MIUI / HyperOS: aktifkan juga **USB debugging (Security settings)** agar kontrol mouse & keyboard berfungsi).*
+2. **Ekstrak** file ZIP yang diunduh dari halaman **Releases** ke satu folder.
+3. **Colokkan HP ke laptop** lewat kabel USB, lalu pilih **Allow / Izinkan** pada popup *USB Debugging* di layar HP.
+4. **Jalankan `AndroidMirror.exe`** (double-click).
+5. Pilih perangkat Android Anda, pilih preset (**Gaming FHD** / **OBS Studio** / **Wi-Fi Stabil**), lalu klik **Start Mirroring**.
+
+---
+
+## 🎥 Panduan Setup OBS Studio
+
+1. Di `AndroidMirror.exe`, pilih preset **OBS Studio**, lalu klik **Start Mirroring** (jendela otomatis berjudul **`amirror [OBS]`**).
+2. **Tambah Video di OBS Studio:**
+   - Klik **Sources → `+` → Window Capture**.
+   - **Window:** `[amirror.exe]: amirror [OBS]`
+   - **Capture Method:** `Windows 10 (1903 and up)`
+   - Centang **Client Area**, lalu tekan **`Ctrl + F`** (*Fit to Screen*).
+3. **Tambah Audio Game Terpisah (tanpa suara Discord/PC):**
+   - Klik **Sources → `+` → Application Audio Capture (BETA)**.
+   - Pilih `[amirror.exe]: amirror [OBS]`.
+4. **Rekomendasi Setting OBS:**
+   - *Settings → Video*: **1920×1080 @ 60 fps**, Downscale Filter **Lanczos**.
+   - *Settings → Advanced*: Color Space **Rec. 709**.
+   - Saat game dibuka dalam mode *Landscape*, jendela `amirror` otomatis menyesuaikan rasio tanpa bar hitam.
+
+---
+
+## ⌨️ Kontrol & Shortcut
+
+| Input / Shortcut | Fungsi |
+|---|---|
+| `Klik kiri / drag` | Sentuh & geser layar HP |
+| `Klik kanan` | Tombol **Back** (atau menyalakan layar jika mati) |
+| `Klik tengah` / `Alt + H` | Tombol **Home** |
+| `Scroll wheel` | Scroll layar |
+| `Alt + F` | Toggle **Fullscreen** |
+| `Alt + B` | Toggle **Borderless** (tanpa bingkai, cocok untuk OBS) |
+| `Alt + 1` / `Alt + 2` | Ukuran jendela **1:1 Native** / pas layar desktop |
+| `Alt + O` | Matikan / nyalakan layar fisik HP (mirror tetap aktif) |
+| `Alt + R` | Putar orientasi layar (**Rotate**) |
+| `Alt + K` | Paksa kirim keyframe baru (refresh ketajaman instan) |
+| `Alt + I` | Tampilkan / sembunyikan info FPS & delay di title bar |
+| `Alt + S` | Recent Apps |
+| `Alt + ↑` / `Alt + ↓` | Volume Naik / Turun |
+| `Alt + P` | Tombol Power |
+
+---
+
+## ❓ Pertanyaan Umum & Batasan
+
+- **Mengapa layar aplikasi tertentu (Netflix / m-Banking) tampil hitam?**
+  Aplikasi dengan proteksi DRM / `FLAG_SECURE` memang diblokir oleh sistem Android untuk keamanan dan tidak dapat direkam tanpa root.
+- **Apakah aman untuk HP?**
+  Aman. Tidak ada perubahan sistem, tidak butuh root, dan tidak ada aplikasi permanen yang terpasang di HP.
+- **Apakah bisa dipakai sambil main game 120 FPS?**
+  Bisa, selama layar dan hardware encoder HP mendukung 90/120 Hz. Untuk kelancaran terbaik tanpa patah-patah, gunakan preset **Gaming FHD (1920)** melalui kabel USB.
+- **Bagaimana cara pakai lewat Wi-Fi tanpa kabel?**
+  Colok kabel USB sebentar → klik tombol **Pindah USB → Wi-Fi (:5555)** di panel kiri `AndroidMirror.exe` → setelah tersambung, kabel USB dapat dicabut. Atau gunakan fitur **Wireless Pairing (Android 11+)** langsung di panel Wi-Fi.
+
+---
+
+## 📄 Catatan Rilis & Masalah (Issues)
+
+- Unduh rilis terbaru: **[Releases](https://github.com/kramli436-tech/AndroidMirror/releases)**
+- Laporkan bug atau saran fitur: **[Issues](https://github.com/kramli436-tech/AndroidMirror/issues)**
